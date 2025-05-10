@@ -15,8 +15,6 @@ namespace FutureVendWeb.Data.Entities
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
         public ICollection<Transaction>? Transactions { get; set; }
-
-        public ICollection<CustomerVendingProduct>? CustomerVendingProducts { get; set; }
     }
 
 }

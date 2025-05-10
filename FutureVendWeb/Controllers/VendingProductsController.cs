@@ -43,18 +43,14 @@ namespace FutureVendWeb.Controllers
 
             if (user == null)
             {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
                 return RedirectToAction("Login", "Account");
             }
 
-            // Задаване на UserId за новия клиент
             vendingProduct.UserId = user.Id;
-            // Задаване на навигационното поле User
             vendingProduct.User = user;
 
             if (_context.VendingProducts.Any(c => c.PLU == vendingProduct.PLU && c.Id == vendingProduct.Id))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този PlU вече съществува.");
                 return View(vendingProduct);
             }
@@ -67,7 +63,6 @@ namespace FutureVendWeb.Controllers
             return View(vendingProduct);
         }
 
-        // GET: VendingProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,8 +79,6 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: VendingProducts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PLU,Name,Description,Category")] VendingProduct vendingProduct)
@@ -99,18 +92,14 @@ namespace FutureVendWeb.Controllers
 
             if (user == null)
             {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
                 return RedirectToAction("Login", "Account");
             }
 
-            // Задаване на UserId за новия клиент
             vendingProduct.UserId = user.Id;
-            // Задаване на навигационното поле User
             vendingProduct.User = user;
 
             if (_context.VendingProducts.Any(c => c.PLU == vendingProduct.PLU && c.Id != id && c.UserId == user.Id))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този PLU вече съществува.");
                 return View(vendingProduct);
             }

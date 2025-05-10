@@ -56,30 +56,23 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CompanyName,FirstName,LastName,Address,City,PostCode,Country,Phone,Email,TaxNumber")] Customer customer)
         {
-            // Получаване на логнатия потребител
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
                 return RedirectToAction("Login", "Account");
             }
 
-            // Задаване на UserId за новия клиент
             customer.UserId = user.Id;
-            // Задаване на навигационното поле User
             customer.User = user;
 
-            // Проверка дали съществува клиент с този UserId и TaxNumber
+            // Check if a customer with this TaxNumber already exists
             if (_context.Customers.Any(c => c.TaxNumber == customer.TaxNumber))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този TaxNumber вече съществува.");
                 return View(customer);
             }
@@ -88,19 +81,15 @@ namespace FutureVendWeb.Controllers
             {
                 try
                 {
-                    // Добавяме клиента към контекста
                     _context.Add(customer);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index)); // Пренасочваме към списъка с клиенти
+                    return RedirectToAction(nameof(Index)); 
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Ако се появи грешка при записване в базата, показваме съобщение
                     ModelState.AddModelError(string.Empty, "Не може да се запише клиентът. Моля, опитайте отново.");
                 }
             }
-
-            // Ако има грешки, връщаме потребителя обратно на формата за създаване
             return View(customer);
         }
     
@@ -122,8 +111,6 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyName,FirstName,LastName,Address,City,PostCode,Country,Phone,Email,TaxNumber")] Customer customer)
@@ -136,20 +123,16 @@ namespace FutureVendWeb.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-            {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
+            { 
                 return RedirectToAction("Login", "Account");
             }
-
-            // Задаване на UserId за новия клиент
             customer.UserId = user.Id;
-            // Задаване на навигационното поле User
+          
+
             customer.User = user;
 
-            // Проверка дали съществува клиент с този UserId и TaxNumber
             if (_context.Customers.Any(c => c.TaxNumber == customer.TaxNumber && c.Id != id))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този TaxNumber вече съществува.");
                 return View(customer);
             }

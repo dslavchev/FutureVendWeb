@@ -33,7 +33,6 @@ namespace FutureVendWeb
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -54,13 +53,11 @@ namespace FutureVendWeb
                 var dbContext = scope.ServiceProvider.GetRequiredService<VendingDbContext>();
                 dbContext.CreateInsertTransactionProcedure();
             }
-            
-            // Ако искате да добавите специален маршрут за Logout
             app.MapPost("/Account/Logout", async context =>
             {
                 var signInManager = context.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
                 await signInManager.SignOutAsync();
-                context.Response.Redirect("/Account/Login"); // Пренасочване към Login
+                context.Response.Redirect("/Account/Login"); // redirect to Login
             });
 
             app.MapControllerRoute(

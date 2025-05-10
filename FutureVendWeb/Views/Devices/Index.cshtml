@@ -15,7 +15,7 @@
         <tr>
             <th>Payment Serial</th>
             <th>Vending Serial</th>
-            <th>Payment Type</th>
+            <th>Payment Name</th>
             <th>Vending Model</th>
             <th>Customer Name</th>
             <th>Accept Card</th>
@@ -31,9 +31,9 @@
             <tr>
                 <td>@item.PaymentDeviceSerial</td>
                 <td>@item.VendingDeviceSerial</td>
-                <td>@item.PaymentDevice?.Manufacturer</td> <!-- Или друго поле от PaymentDevice -->
-                <td>@item.VendingDevice?.Model</td> <!-- Или друго поле от VendingDevice -->
-                <td>@item.Customer?.CompanyName</td> <!-- Или FirstName + LastName -->
+                <td>@item.PaymentDevice?.Manufacturer</td> 
+                <td>@item.VendingDevice?.Model</td> 
+                <td>@item.Customer?.CompanyName</td> 
                 <td>@item.AcceptCard</td>
                 <td>@item.AcceptCash</td>
                 <td>@item.LocationLat</td>

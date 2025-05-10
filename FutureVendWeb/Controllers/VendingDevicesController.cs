@@ -23,7 +23,7 @@ namespace FutureVendWeb.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge(); // Пренасочва ако не е логнат
+            if (user == null) return Challenge();
 
             var devices = await _context.VendingDevices
                 .Where(d => d.UserId == user.Id)
@@ -57,8 +57,6 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: VendingDevices/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VendingDevice device)
@@ -95,8 +93,7 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: VendingDevices/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Model,Manufacturer,SoftwareVersion")] VendingDevice vendingDevice)
@@ -108,15 +105,13 @@ namespace FutureVendWeb.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-            {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
+            { 
                 return RedirectToAction("Login", "Account");
             }
 
-            // Задаване на UserId за новия клиент
             vendingDevice.UserId = user.Id;
-            // Задаване на навигационното поле User
             vendingDevice.User = user;
+
             if (ModelState.IsValid)
             {
                 try

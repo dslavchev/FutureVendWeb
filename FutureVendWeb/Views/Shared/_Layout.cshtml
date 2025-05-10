@@ -41,16 +41,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
                             </li>
                         </ul>
-                        <!-- Частта с потребителя и бутона за изход ще бъде тук -->
+                        <!-- The part with the user and the logout button will be here -->
                         <ul class="navbar-nav ms-auto d-flex align-items-center">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <!-- Име на потребителя -->
+                                <!-- User name -->
                                 <li class="nav-item me-3">
                                     <span class="navbar-text">@UserManager.GetUserAsync(User).Result.FullName</span>
                                 </li>
 
-                                <!-- Бутон за изход -->
+                                <!--Button for exit -->
                                 <li class="nav-item">
                                     <form asp-area="Identity" asp-page="/Account/Logout" method="post">
                                         <button type="submit" class="btn btn-link">Изход</button>
@@ -59,7 +59,7 @@
                             }
                             else
                             {
-                                <!-- Вход и регистрация ако потребителят не е логнат -->
+                                <!-- Login and registration if the user is not logged in -->
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Вход</a>
                                 </li>

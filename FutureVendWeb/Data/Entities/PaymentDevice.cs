@@ -17,7 +17,7 @@ namespace FutureVendWeb.Data.Entities
         public ApplicationUser? User { get; set; }
 
 
-        //public ICollection<Device> Devices { get; set; } // навигационно свойство
+        public ICollection<Device> ? Devices { get; set; } 
     }
 
 }

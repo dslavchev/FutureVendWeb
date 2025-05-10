@@ -31,6 +31,7 @@ namespace FutureVendWeb.Controllers
 
             var transactions = await _context.Transactions
                 .Include(t => t.Device)
+                    .ThenInclude(d => d.PaymentDevice)
                 .Include(t => t.VendingProduct)
                 .Where(t => t.Device.UserId == userId)
                 .ToListAsync();

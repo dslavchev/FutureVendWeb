@@ -57,8 +57,7 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: PaymentDevices/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PaymentDevice device)
@@ -95,8 +94,7 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: PaymentDevices/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Manufacturer,OSVersion,NFC,Chip")] PaymentDevice paymentDevice)
@@ -109,14 +107,12 @@ namespace FutureVendWeb.Controllers
 
             if (user == null)
             {
-                // Ако няма логнат потребител, пренасочваме към страницата за логин
                 return RedirectToAction("Login", "Account");
             }
 
-            // Задаване на UserId за новия клиент
             paymentDevice.UserId = user.Id;
-            // Задаване на навигационното поле User
             paymentDevice.User = user;
+
             if (ModelState.IsValid)
             {
                 try

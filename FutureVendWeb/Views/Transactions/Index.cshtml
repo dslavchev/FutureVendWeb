@@ -6,9 +6,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -46,18 +43,16 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Device.Id)
+                @Html.DisplayFor(modelItem => item.Device.PaymentDevice.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VendingProduct.Id)
+                @Html.DisplayFor(modelItem => item.VendingProduct.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PaymentType)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

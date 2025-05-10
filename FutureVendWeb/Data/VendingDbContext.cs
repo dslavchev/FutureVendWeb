@@ -17,7 +17,6 @@ namespace FutureVendWeb.Data
         public DbSet<VendingDevice> VendingDevices { get; set; }
         public DbSet<VendingProduct> VendingProducts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<CustomerVendingProduct> CustomerVendingProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

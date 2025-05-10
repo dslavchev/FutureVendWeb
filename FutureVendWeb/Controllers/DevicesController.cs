@@ -94,8 +94,7 @@ namespace FutureVendWeb.Controllers
         }
 
         // POST: Devices/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PaymentDeviceSerial,VendingDeviceSerial,PaymentDeviceId,VendingDeviceId,CustomerId,AcceptCard,AcceptCash,LocationLat,LocationLon")] Device device)
@@ -105,22 +104,19 @@ namespace FutureVendWeb.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-
-            // Задай UserId и навигационното поле
             device.UserId = user.Id;
             device.User = user;
 
+            // Check if a device with this VendingDeviceSerial , PaymentDeviceSerial already exists
 
             if (_context.Devices.Any(c => c.VendingDeviceSerial == device.VendingDeviceSerial ))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този VendingDeviceSerial вече съществува.");
                 SetViewBag(user);
                 return View(device);
             }
             if (_context.Devices.Any(c => c.PaymentDeviceSerial == device.PaymentDeviceSerial))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този PaymentDeviceSerial вече съществува.");
                 SetViewBag(user);
                 return View(device);
@@ -132,8 +128,6 @@ namespace FutureVendWeb.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            // Ако ModelState не е валиден – върни формата
             ViewData["CustomerId"] = new SelectList(_context.Customers.Where(c => c.UserId == user.Id), "Id", "CompanyName");
             ViewData["VendingDeviceId"] = new SelectList(_context.VendingDevices.Where(v => v.UserId == user.Id), "Id", "Model");
             ViewData["PaymentDeviceId"] = new SelectList(_context.PaymentDevices.Where(p => p.UserId == user.Id), "Id", "SerialNumber");
@@ -156,16 +150,11 @@ namespace FutureVendWeb.Controllers
             }
             var user = await _userManager.GetUserAsync(User);
             SetViewBag(user);
-            /*ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Id", device.CustomerId);
-            ViewData["PaymentDeviceId"] = new SelectList(_context.PaymentDevices, "Id", "Id", device.PaymentDeviceId);
-            ViewData["VendingDeviceId"] = new SelectList(_context.VendingDevices, "Id", "Id", device.VendingDeviceId);
-            */
             return View(device);
         }
 
         // POST: Devices/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PaymentDeviceSerial,VendingDeviceSerial,PaymentDeviceId,VendingDeviceId,CustomerId,AcceptCard,AcceptCash,LocationLat,LocationLon")] Device device)
@@ -187,14 +176,12 @@ namespace FutureVendWeb.Controllers
 
             if (_context.Devices.Any(c => c.VendingDeviceSerial == device.VendingDeviceSerial && c.Id != id))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този VendingDeviceSerial вече съществува.");
                 SetViewBag(user);
                 return View(device);
             }
             if (_context.Devices.Any(c => c.PaymentDeviceSerial == device.PaymentDeviceSerial && c.Id != id))
             {
-                // Ако има дублиран запис
                 ModelState.AddModelError(string.Empty, "Запис с този PaymentDeviceSerial вече съществува.");
                 SetViewBag(user);
                 return View(device);
