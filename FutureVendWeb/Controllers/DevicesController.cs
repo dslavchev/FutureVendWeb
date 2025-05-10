@@ -206,9 +206,9 @@ namespace FutureVendWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Id", device.CustomerId);
-            ViewData["PaymentDeviceId"] = new SelectList(_context.PaymentDevices, "Id", "Id", device.PaymentDeviceId);
-            ViewData["VendingDeviceId"] = new SelectList(_context.VendingDevices, "Id", "Id", device.VendingDeviceId);
+            //ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Id", device.CustomerId);
+            //ViewData["PaymentDeviceId"] = new SelectList(_context.PaymentDevices, "Id", "Id", device.PaymentDeviceId);
+            //ViewData["VendingDeviceId"] = new SelectList(_context.VendingDevices, "Id", "Id", device.VendingDeviceId);
             return View(device);
         }
 
@@ -241,7 +241,16 @@ namespace FutureVendWeb.Controllers
             var device = await _context.Devices.FindAsync(id);
             if (device != null)
             {
-                _context.Devices.Remove(device);
+                bool exists = await _context.Transactions.AnyAsync(t => t.DeviceId == device.Id);
+                if (exists)
+                {
+                    ModelState.AddModelError(string.Empty, "Този запис не може да бъде изтрит.");
+                    return View(device);
+                }
+                else
+                {
+                    _context.Devices.Remove(device);
+                }
             }
 
             await _context.SaveChangesAsync();

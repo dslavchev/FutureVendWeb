@@ -161,7 +161,16 @@ namespace FutureVendWeb.Controllers
             var vendingDevice = await _context.VendingDevices.FindAsync(id);
             if (vendingDevice != null)
             {
-                _context.VendingDevices.Remove(vendingDevice);
+                bool exists = await _context.Devices.AnyAsync(d => d.VendingDeviceId == vendingDevice.Id);
+                if (exists)
+                {
+                    ModelState.AddModelError(string.Empty, "Този запис не може да бъде изтрит.");
+                    return View(vendingDevice);
+                }
+                else
+                {
+                    _context.VendingDevices.Remove(vendingDevice);
+                }
             }
 
             await _context.SaveChangesAsync();

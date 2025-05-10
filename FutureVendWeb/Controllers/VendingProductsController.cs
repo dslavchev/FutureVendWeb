@@ -30,6 +30,23 @@ namespace FutureVendWeb.Controllers
             return View(products);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vendingProduct = await _context.VendingProducts
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vendingProduct == null)
+            {
+                return NotFound();
+            }
+
+            return View(vendingProduct);
+        }
+
         public IActionResult Create()
         {
             return View();
@@ -152,7 +169,16 @@ namespace FutureVendWeb.Controllers
             var vendingProduct = await _context.VendingProducts.FindAsync(id);
             if (vendingProduct != null)
             {
-                _context.VendingProducts.Remove(vendingProduct);
+                bool exists = await _context.Transactions.AnyAsync(t => t.VendingProductId == vendingProduct.Id);
+                if (exists)
+                {
+                    ModelState.AddModelError(string.Empty, "Този запис не може да бъде изтрит.");
+                    return View(vendingProduct);
+                }
+                else
+                {
+                    _context.VendingProducts.Remove(vendingProduct);
+                }      
             }
 
             await _context.SaveChangesAsync();

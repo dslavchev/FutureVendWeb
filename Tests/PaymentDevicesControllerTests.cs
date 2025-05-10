@@ -1,0 +1,144 @@
+﻿using FutureVendWeb.Controllers;
+using FutureVendWeb.Data;
+using FutureVendWeb.Data.Entities;
+using FutureVendWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+namespace FutureVendWeb.Tests.Controllers
+{
+    [TestFixture]
+    public class PaymentDevicesControllerTests
+    {
+        private PaymentDevicesController _controller;
+        private VendingDbContext _context;
+        private Mock<UserManager<ApplicationUser>> _userManagerMock;
+        private ApplicationUser _testUser;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var options = new DbContextOptionsBuilder<VendingDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            _context = new VendingDbContext(options);
+
+            var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+            _testUser = new ApplicationUser { Id = "user1", UserName = "testuser", FullName = "Test User" };
+            _userManagerMock.Setup(u => u.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(_testUser);
+
+            _controller = new PaymentDevicesController(_context, _userManagerMock.Object);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, _testUser.Id),
+                        new Claim(ClaimTypes.Name, _testUser.UserName)
+                    }, "TestAuth"))
+                }
+            };
+        }
+
+        private async Task<PaymentDevice> CreateValidPaymentDeviceAsync()
+        {
+            var device = new PaymentDevice
+            {
+                Name = "PaymentDevice1",
+                Manufacturer = "Manufacturer1",
+                OSVersion = "1.0.0",
+                NFC = true,
+                Chip = true,
+                UserId = _testUser.Id
+            };
+
+            _context.PaymentDevices.Add(device);
+            await _context.SaveChangesAsync();
+
+            return device;
+        }
+
+        [Test]
+        public async Task Index_ReturnsDevicesForUser()
+        {
+            var device = await CreateValidPaymentDeviceAsync();
+            var result = await _controller.Index();
+
+            var view = result as ViewResult;
+            var model = view?.Model as List<PaymentDevice>;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual(1, model.Count);
+            Assert.AreEqual(device.Name, model[0].Name);
+        }
+
+        [Test]
+        public async Task Create_Post_ValidDevice_AddsToDatabase()
+        {
+            var device = new PaymentDevice
+            {
+                Name = "PaymentDevice2",
+                Manufacturer = "Manufacturer2",
+                OSVersion = "2.0.0",
+                NFC = true,
+                Chip = false
+            };
+
+            var result = await _controller.Create(device);
+            var redirect = result as RedirectToActionResult;
+
+            Assert.IsNotNull(redirect);
+            Assert.AreEqual("Index", redirect.ActionName);
+            Assert.AreEqual(1, _context.PaymentDevices.Count());
+        }
+
+        [Test]
+        public async Task Edit_Post_ValidDevice_UpdatesDatabase()
+        {
+            var device = await CreateValidPaymentDeviceAsync();
+            device.Name = "UpdatedPaymentDevice";
+
+            var result = await _controller.Edit(device.Id, device);
+            var redirect = result as RedirectToActionResult;
+
+            Assert.IsNotNull(redirect);
+            Assert.AreEqual("Index", redirect.ActionName);
+
+            var updatedDevice = await _context.PaymentDevices.FindAsync(device.Id);
+            Assert.AreEqual("UpdatedPaymentDevice", updatedDevice.Name);
+        }
+
+        [Test]
+        public async Task DeleteConfirmed_RemovesDevice()
+        {
+            var device = await CreateValidPaymentDeviceAsync();
+
+            var result = await _controller.DeleteConfirmed(device.Id);
+            var redirect = result as RedirectToActionResult;
+
+            Assert.IsNotNull(redirect);
+            Assert.AreEqual("Index", redirect.ActionName);
+            Assert.IsNull(await _context.PaymentDevices.FindAsync(device.Id));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _controller?.Dispose();
+            _context?.Database.EnsureDeleted();
+            _context?.Dispose();
+        }
+    }
+}
+

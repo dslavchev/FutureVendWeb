@@ -5,6 +5,7 @@ using FutureVendWeb.Data.Entities;
 using FutureVendWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Castle.Core.Resource;
 
 namespace FutureVendWeb.Controllers
 {
@@ -162,7 +163,16 @@ namespace FutureVendWeb.Controllers
             var paymentDevice = await _context.PaymentDevices.FindAsync(id);
             if (paymentDevice != null)
             {
-                _context.PaymentDevices.Remove(paymentDevice);
+                bool exists = await _context.Devices.AnyAsync(d => d.PaymentDeviceId == paymentDevice.Id);
+                if (exists)
+                {
+                    ModelState.AddModelError(string.Empty, "Този запис не може да бъде изтрит.");
+                    return View(paymentDevice);
+                }
+                else
+                {
+                    _context.PaymentDevices.Remove(paymentDevice);
+                }
             }
 
             await _context.SaveChangesAsync();

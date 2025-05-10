@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using FutureVendWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FutureVendWeb.Controllers
 {
@@ -9,7 +11,7 @@ namespace FutureVendWeb.Controllers
     {
         public HomeController()
         {
-    
+           
         }
 
         [Authorize]

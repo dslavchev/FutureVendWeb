@@ -32,6 +32,8 @@ namespace FutureVendWeb.Controllers
             var transactions = await _context.Transactions
                 .Include(t => t.Device)
                     .ThenInclude(d => d.PaymentDevice)
+                .Include(t => t.Device)
+                    .ThenInclude(d => d.Customer)
                 .Include(t => t.VendingProduct)
                 .Where(t => t.Device.UserId == userId)
                 .ToListAsync();
@@ -39,6 +41,27 @@ namespace FutureVendWeb.Controllers
             return View(transactions);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var transaction = await _context.Transactions
+                .Include(t => t.Device)
+                    .ThenInclude(d => d.PaymentDevice)
+                .Include(t => t.Device)
+                    .ThenInclude(d => d.Customer)
+                .Include(t => t.VendingProduct)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(transaction);
+        }
         [HttpPost]
         [Route("api/transactions/add")]
         public async Task<IActionResult> AddTransactionViaProcedure([FromBody] TransactionRequestModel model)
@@ -78,6 +101,9 @@ namespace FutureVendWeb.Controllers
 
             var transaction = await _context.Transactions
                 .Include(t => t.Device)
+                    .ThenInclude(d => d.PaymentDevice)
+                .Include(t => t.Device)
+                    .ThenInclude(d => d.Customer)
                 .Include(t => t.VendingProduct)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
