@@ -1,0 +1,49 @@
+﻿@model IEnumerable<FutureVendWeb.Data.Entities.Device>
+
+@{
+    ViewData["Title"] = "Devices";
+}
+
+<h1>Devices</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Payment Serial</th>
+            <th>Vending Serial</th>
+            <th>Payment Type</th>
+            <th>Vending Model</th>
+            <th>Customer Name</th>
+            <th>Accept Card</th>
+            <th>Accept Cash</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PaymentDeviceSerial</td>
+                <td>@item.VendingDeviceSerial</td>
+                <td>@item.PaymentDevice?.Manufacturer</td> <!-- Или друго поле от PaymentDevice -->
+                <td>@item.VendingDevice?.Model</td> <!-- Или друго поле от VendingDevice -->
+                <td>@item.Customer?.CompanyName</td> <!-- Или FirstName + LastName -->
+                <td>@item.AcceptCard</td>
+                <td>@item.AcceptCash</td>
+                <td>@item.LocationLat</td>
+                <td>@item.LocationLon</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
