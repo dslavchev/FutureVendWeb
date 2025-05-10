@@ -1,6 +1,5 @@
 ﻿using FutureVendWeb.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 
 namespace FutureVendWeb.Data.Entities
 {
