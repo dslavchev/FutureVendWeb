@@ -134,7 +134,7 @@ namespace FutureVendWeb.Tests.Controllers
             Assert.IsFalse(viewResult.ViewData.ModelState.IsValid);
 
             var errorMessage = viewResult.ViewData.ModelState[""].Errors[0].ErrorMessage;
-            Assert.AreEqual("Запис с този TaxNumber вече съществува.", errorMessage);
+            Assert.AreEqual("A customer with this TaxNumber already exists.", errorMessage);
         }
 
         [Test]
