@@ -2,6 +2,8 @@
 using FutureVendWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace FutureVendWeb
 {
@@ -10,6 +12,22 @@ namespace FutureVendWeb
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add Swagger
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "FutureVend API",
+                    Version = "v1",
+                    Description = "Decription for the public API to access from payment devices"
+                });
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -28,6 +46,13 @@ namespace FutureVendWeb
             }).AddEntityFrameworkStores<VendingDbContext>();
 
             var app = builder.Build();
+
+            // Enable Swagger only in development mode
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

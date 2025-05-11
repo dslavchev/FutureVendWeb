@@ -7,6 +7,8 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
+    <NoWarn>8602,8625,NUnit2005</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

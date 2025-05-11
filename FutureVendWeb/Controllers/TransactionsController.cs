@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FutureVendWeb.Data;
 using FutureVendWeb.Data.Entities;
@@ -10,19 +9,28 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FutureVendWeb.Controllers
 {
+    /// <summary>
+    /// Handles operations related to vending machine transactions,
+    /// including listing, viewing details, creating via stored procedure, and deleting transactions.
+    /// </summary>
     public class TransactionsController : Controller
     {
         private readonly VendingDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionsController"/> class.
+        /// </summary>
         public TransactionsController(VendingDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-
-        // GET: Transactions
+        /// <summary>
+        /// Displays all transactions associated with the currently logged-in user.
+        /// </summary>
+        /// <returns>A view showing the list of transactions.</returns>
         [Authorize]
         public async Task<IActionResult> Index()
         {
@@ -41,12 +49,14 @@ namespace FutureVendWeb.Controllers
             return View(transactions);
         }
 
+        /// <summary>
+        /// Shows detailed information about a specific transaction.
+        /// </summary>
+        /// <param name="id">The ID of the transaction.</param>
+        /// <returns>A view with transaction details, or 404 if not found.</returns>
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var transaction = await _context.Transactions
                 .Include(t => t.Device)
@@ -55,13 +65,18 @@ namespace FutureVendWeb.Controllers
                     .ThenInclude(d => d.Customer)
                 .Include(t => t.VendingProduct)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
+
+            if (transaction == null) return NotFound();
 
             return View(transaction);
         }
+
+        /// <summary>
+        /// Adds a new transaction using a stored procedure.
+        /// This endpoint is intended for external integration via HTTP POST.
+        /// </summary>
+        /// <param name="model">The transaction data provided in the request body.</param>
+        /// <returns>A success message or an error response.</returns>
         [HttpPost]
         [Route("api/transactions/add")]
         public async Task<IActionResult> AddTransactionViaProcedure([FromBody] TransactionRequestModel model)
@@ -94,6 +109,12 @@ namespace FutureVendWeb.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Displays a confirmation page for deleting a specific transaction.
+        /// </summary>
+        /// <param name="id">The ID of the transaction.</param>
+        /// <returns>A view with transaction details or a 404 error if not found.</returns>
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -112,7 +133,11 @@ namespace FutureVendWeb.Controllers
             return View(transaction);
         }
 
-        // POST: Transactions/Delete/5
+        /// <summary>
+        /// Permanently deletes a transaction from the database.
+        /// </summary>
+        /// <param name="id">The ID of the transaction to delete.</param>
+        /// <returns>A redirect to the Index view after deletion.</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -128,3 +153,4 @@ namespace FutureVendWeb.Controllers
         }
     }
 }
+
