@@ -1,9 +1,14 @@
 ﻿using FutureVendWeb.Data;
-using FutureVendWeb.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using FutureVendWeb.Services.VendingDevice;
+using FutureVendWeb.Services.VendingProducts;
+using FutureVendWeb.Services.PaymentDevice;
+using FutureVendWeb.Services.Customer;
+using FutureVendWeb.Services.Device;
+using FutureVendWeb.Services.Transaction;
+using FutureVendWeb.Services.User;
 
 namespace FutureVendWeb
 {
@@ -12,6 +17,10 @@ namespace FutureVendWeb
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddRazorPages();
+
+            builder.Services.AddHttpContextAccessor();
 
             // Add Swagger
             builder.Services.AddEndpointsApiExplorer();
@@ -29,8 +38,32 @@ namespace FutureVendWeb
                 });
             });
 
+            // Add my services
+            builder.Services.AddTransient<IVendingDeviceService, VendingDeviceService>();
+
+            builder.Services.AddTransient<IVendingProductService, VendingProductService>();
+
+            builder.Services.AddTransient<IPaymentDeviceService, PaymentDeviceService>();
+
+            builder.Services.AddTransient<ICustomerService, CustomerService>();
+
+            builder.Services.AddTransient<IDeviceService, DeviceService>();
+
+            builder.Services.AddTransient<ITransactionService, TransactionService>();
+
+            builder.Services.AddTransient<IUserService , UserService>();
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add sessions support
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             // Add database
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -39,11 +72,6 @@ namespace FutureVendWeb
                 throw new ArgumentException("Missing connection string");
             }
             builder.Services.AddDbContext<VendingDbContext>(options => options.UseMySQL(connectionString));
-
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false;
-            }).AddEntityFrameworkStores<VendingDbContext>();
 
             var app = builder.Build();
 
@@ -65,25 +93,11 @@ namespace FutureVendWeb
 
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
 
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
             app.MapRazorPages();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<VendingDbContext>();
-                dbContext.CreateInsertTransactionProcedure();
-            }
-            app.MapPost("/Account/Logout", async context =>
-            {
-                var signInManager = context.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
-                await signInManager.SignOutAsync();
-                context.Response.Redirect("/Account/Login"); // redirect to Login
-            });
 
             app.MapControllerRoute(
                 name: "default",

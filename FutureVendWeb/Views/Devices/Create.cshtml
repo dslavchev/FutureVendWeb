@@ -1,70 +1,82 @@
-﻿@model FutureVendWeb.Data.Entities.Device
+﻿@model FutureVendWeb.Data.Models.Device.CreateDeviceModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Създай ново устройство";
 }
 
-<h1>Create</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>Device</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PaymentDeviceSerial" class="control-label"></label>
-                <input asp-for="PaymentDeviceSerial" class="form-control" />
-                <span asp-validation-for="PaymentDeviceSerial" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VendingDeviceSerial" class="control-label"></label>
-                <input asp-for="VendingDeviceSerial" class="form-control" />
-                <span asp-validation-for="VendingDeviceSerial" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentDeviceId" class="control-label"></label>
-                <select asp-for="PaymentDeviceId" class ="form-control" asp-items="ViewBag.PaymentDeviceId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="VendingDeviceId" class="control-label"></label>
-                <select asp-for="VendingDeviceId" class ="form-control" asp-items="ViewBag.VendingDeviceId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class ="form-control" asp-items="ViewBag.CustomerId"></select>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AcceptCard" /> @Html.DisplayNameFor(model => model.AcceptCard)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AcceptCash" /> @Html.DisplayNameFor(model => model.AcceptCash)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationLat" class="control-label"></label>
-                <input asp-for="LocationLat" class="form-control" />
-                <span asp-validation-for="LocationLat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationLon" class="control-label"></label>
-                <input asp-for="LocationLon" class="form-control" />
-                <span asp-validation-for="LocationLon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    @if (ViewData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @ViewData["Error"]
+        </div>
+    }
+
+    <div class="form-group">
+        <label asp-for="PaymentDeviceSerial"></label>
+        <input asp-for="PaymentDeviceSerial" class="form-control" />
+        <span asp-validation-for="PaymentDeviceSerial" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="PaymentDeviceId">Payment device</label>
+        <select asp-for="PaymentDeviceId" asp-items="Model.PaymentDevices" class="form-control">
+            <option value="">-- Choose --</option>
+        </select>
+        <span asp-validation-for="PaymentDeviceId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VendingDeviceSerial"></label>
+        <input asp-for="VendingDeviceSerial" class="form-control" />
+        <span asp-validation-for="VendingDeviceSerial" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VendingDeviceId">Vending device</label>
+        <select asp-for="VendingDeviceId" asp-items="Model.VendingDevices" class="form-control">
+            <option value="">-- Choose --</option>
+        </select>
+        <span asp-validation-for="VendingDeviceId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CustomerId">Customer</label>
+        <select asp-for="CustomerId" asp-items="Model.Customers" class="form-control">
+            <option value="">-- Choose --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="AcceptCard" class="form-check-input" />
+        <label asp-for="AcceptCard" class="form-check-label"></label>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="AcceptCash" class="form-check-input" />
+        <label asp-for="AcceptCash" class="form-check-label"></label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LocationLat"></label>
+        <input asp-for="LocationLat" class="form-control" />
+        <span asp-validation-for="LocationLat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LocationLon"></label>
+        <input asp-for="LocationLon" class="form-control" />
+        <span asp-validation-for="LocationLon" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Създай</button>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

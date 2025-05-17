@@ -1,68 +1,36 @@
-﻿@model IEnumerable<FutureVendWeb.Data.Entities.Transaction>
+﻿@model IEnumerable<FutureVendWeb.Data.Models.Transaction.GetAllTransactionWithViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Transactions";
 }
 
-<h1>Index</h1>
+<h1>All Transactions</h1>
 
-<table class="table">
-    <thead>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Device.Customer.CompanyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Currency)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Device)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VendingProduct)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentType)
-            </th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Device Info</th>
+            <th>Vending Product</th>
+            <th>Customer</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Device.Customer.CompanyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Currency)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Device.PaymentDevice.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VendingProduct.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentType)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-           
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Amount.ToString("C")</td>
+                <td>@item.Currency</td>
+                <td>@item.DeviceInformation</td>
+                <td>@item.VendingProductInformation</td>
+                <td>@item.CustomerInformation</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

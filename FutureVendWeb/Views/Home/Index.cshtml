@@ -1,9 +1,9 @@
-﻿@using Microsoft.AspNetCore.Identity
-@{
+﻿@{
     ViewData["Title"] = "Начална страница";
 }
-@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@inject FutureVendWeb.Services.User.IUserService user
+
 <div class="container">
     <h1>Добре дошли в FutureVend!</h1>
-    <p>Здравейте, @UserManager.GetUserAsync(User).Result.FullName! Това е вашето приложение за управление на вендинг машини.</p>
+    <p>Здравейте, @user.GetUser().Name! Това е вашето приложение за управление на вендинг машини.</p>
 </div>

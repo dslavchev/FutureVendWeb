@@ -1,72 +1,43 @@
-﻿@model FutureVendWeb.Data.Entities.Device
+﻿@model FutureVendWeb.Data.Models.Device.DeviceDetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Device Details";
 }
 
-<h1>Details</h1>
+<h1>Device Details</h1>
 
-<div>
-    <h4>Device</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PaymentDeviceSerial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PaymentDeviceSerial)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VendingDeviceSerial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VendingDeviceSerial)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PaymentDevice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PaymentDevice.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VendingDevice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VendingDevice.Model)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CompanyName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AcceptCard)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AcceptCard)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AcceptCash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AcceptCash)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LocationLat)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LocationLat)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LocationLon)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LocationLon)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<hr />
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Payment Device Serial</dt>
+            <dd class="col-sm-8">@Model.PaymentDeviceSerial</dd>
+
+            <dt class="col-sm-4">Payment Device</dt>
+            <dd class="col-sm-8">@Model.PaymentDeviceInformation</dd>
+
+            <dt class="col-sm-4">Vending Device Serial</dt>
+            <dd class="col-sm-8">@Model.VendingDeviceSerial</dd>
+
+            <dt class="col-sm-4">Vending Device</dt>
+            <dd class="col-sm-8">@Model.VendingDeviceInformation</dd>
+
+            <dt class="col-sm-4">Customer</dt>
+            <dd class="col-sm-8">@Model.CustomerInformation</dd>
+
+            <dt class="col-sm-4">Accept Card</dt>
+            <dd class="col-sm-8">@Model.AcceptCard</dd>
+
+            <dt class="col-sm-4">Accept Cash</dt>
+            <dd class="col-sm-8">@Model.AcceptCash</dd>
+
+            <dt class="col-sm-4">Latitude</dt>
+            <dd class="col-sm-8">@Model.LocationLat</dd>
+
+            <dt class="col-sm-4">Longitude</dt>
+            <dd class="col-sm-8">@Model.LocationLon</dd>
+        </dl>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>

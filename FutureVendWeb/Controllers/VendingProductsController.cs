@@ -1,12 +1,126 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FutureVendWeb.Data;
-using FutureVendWeb.Data.Entities;
-using FutureVendWeb.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using FutureVendWeb.Services.VendingProducts;
+using FutureVendWeb.Data.Models.VendingProducts;
+using FutureVendWeb.Data.Models.User;
+using FutureVendWeb.Services.User;
 
 namespace FutureVendWeb.Controllers
+{
+    public class VendingProductsController : Controller
+    {
+        private readonly IVendingProductService _vendingProductService;
+        private readonly IUserService _userService;
+        public VendingProductsController(IVendingProductService vendingProductService , IUserService userService)
+        {
+            _vendingProductService = vendingProductService;
+            _userService = userService;
+        }
+
+        public IActionResult Index()
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+            
+            List<GetAllVendingProductsViewModel> getAllVendingDevicesViewModel = _vendingProductService.GetAll(user);
+            return View(getAllVendingDevicesViewModel);
+
+        }
+
+        [HttpGet]
+        public  IActionResult Create()
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+            
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(CreateVendingProductModel createVendingProduct)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+            try
+            {
+                _vendingProductService.Create(createVendingProduct, user);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = ex.Message;
+                return View(createVendingProduct);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            GetVendingProductModel vendingProduct = _vendingProductService.Get(id);
+            return View(vendingProduct);
+        } 
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+
+            GetVendingProductModel vendingProduct = _vendingProductService.Get(id);
+            return View(vendingProduct);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, UpdateVendingProductModel updateVendingProduct)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            try
+            {
+                _vendingProductService.Update(id, updateVendingProduct);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = ex.Message;
+                GetVendingProductModel vendingProduct = _vendingProductService.Get(id);
+                return View(vendingProduct);
+            }
+        }
+        [HttpGet]
+        public IActionResult Delete(int id) {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            GetVendingProductModel vendingProduct = _vendingProductService.Get(id);
+            return View(vendingProduct);
+        }
+        [HttpPost]
+        public IActionResult DeleteVendingProduct(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            try
+            {
+                _vendingProductService.Delete(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = ex.Message;
+                GetVendingProductModel product = _vendingProductService.Get(id);
+                return View("Delete", product);
+            }
+        }
+
+    }
+}
+/*
 {
     /// <summary>
     /// Controller for managing vending products in the application.
@@ -243,3 +357,5 @@ namespace FutureVendWeb.Controllers
         }
     }
 }
+*/
+

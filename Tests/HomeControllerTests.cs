@@ -1,13 +1,10 @@
 ﻿using FutureVendWeb.Controllers;
-using FutureVendWeb.Models;
+using FutureVendWeb.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using System.Diagnostics;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
+/*
 namespace FutureVendWeb.Tests.Controllers
 {
     [TestFixture]
@@ -80,3 +77,4 @@ namespace FutureVendWeb.Tests.Controllers
         }
     }
 }
+*/

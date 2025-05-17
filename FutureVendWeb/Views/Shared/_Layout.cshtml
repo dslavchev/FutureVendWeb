@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="~/FutureVendWeb.styles.css" asp-append-version="true" />
 </head>
 <body>
-    @inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+    @inject FutureVendWeb.Services.User.IUserService user
 
-    @if (User.Identity!.IsAuthenticated) {
+    @if (user.GetUser() != null) {
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container-fluid">
@@ -43,30 +43,14 @@
                         </ul>
                         <!-- The part with the user and the logout button will be here -->
                         <ul class="navbar-nav ms-auto d-flex align-items-center">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <!-- User name -->
-                                <li class="nav-item me-3">
-                                    <span class="navbar-text">@UserManager.GetUserAsync(User).Result.FullName</span>
-                                </li>
+                            <li class="nav-item me-3">
+                                <span class="navbar-text">@user.GetUser().Name</span>
+                            </li>
 
-                                <!--Button for exit -->
-                                <li class="nav-item">
-                                    <form asp-area="Identity" asp-page="/Account/Logout" method="post">
-                                        <button type="submit" class="btn btn-link">Изход</button>
-                                    </form>
-                                </li>
-                            }
-                            else
-                            {
-                                <!-- Login and registration if the user is not logged in -->
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Вход</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Регистрация</a>
-                                </li>
-                            }
+                            <!--Button for exit -->
+                            <li class="nav-item">
+                                <a asp-action="Logout" asp-controller="User" class="btn btn-secondary">Logout</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

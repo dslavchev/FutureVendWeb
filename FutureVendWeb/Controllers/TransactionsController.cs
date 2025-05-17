@@ -1,20 +1,82 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FutureVendWeb.Data;
-using FutureVendWeb.Data.Entities;
-using FutureVendWeb.Models;
-using MySql.Data.MySqlClient;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using FutureVendWeb.Services.Transaction;
+using FutureVendWeb.Data.Models.Transaction;
+using FutureVendWeb.Services.User;
+using FutureVendWeb.Data.Models.User;
 
 namespace FutureVendWeb.Controllers
 {
+    public class TransactionsController : Controller
+    {
+        private readonly ITransactionService _transactionService;
+        private readonly IUserService _userService;
+
+        public TransactionsController(ITransactionService transactionService, IUserService userService)
+        {
+            _transactionService = transactionService;
+            _userService = userService;
+        }
+
+        public IActionResult Index()
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            List<GetAllTransactionWithViewModel> getAllTransactionWithViewModels = _transactionService.GetAll(user);
+            return View(getAllTransactionWithViewModels);
+        }
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            GetTransactionModel getTransaction = _transactionService.Get(id);
+            return View(getTransaction);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateTransactionModel transaction)
+        {
+            try
+            {
+                _transactionService.Create(transaction);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            GetTransactionModel transaction = _transactionService.Get(id);
+            return View(transaction);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTransaction(int id)
+        {
+            UserData? user = _userService.GetUser();
+            if (user == null) return RedirectToAction("Login", "User");
+
+            _transactionService.Delete(id);
+            return RedirectToAction("Index");
+        }
+    }
+
+    /*
     /// <summary>
     /// Handles operations related to vending machine transactions,
     /// including listing, viewing details, creating via stored procedure, and deleting transactions.
     /// </summary>
     public class TransactionsController : Controller
-    {
+    {   
         private readonly VendingDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -153,4 +215,7 @@ namespace FutureVendWeb.Controllers
         }
     }
 }
+*/
+}
+    
 

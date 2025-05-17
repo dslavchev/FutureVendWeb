@@ -1,47 +1,33 @@
-﻿@model IEnumerable<FutureVendWeb.Data.Entities.Device>
+﻿@model List<FutureVendWeb.Data.Models.Device.GetAllDevicesWithViewModel>
 
 @{
-    ViewData["Title"] = "Devices";
+    ViewData["Title"] = "All Devices";
 }
 
-<h1>Devices</h1>
+<h2>@ViewData["Title"]</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<a asp-action="Create" class="btn btn-success mb-3">Add New Device</a>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>Company Name</th>
-            <th>Payment Serial</th>
-            <th>Vending Serial</th>
-            <th>Payment Name</th>
-            <th>Vending Model</th>
-            <th>Accept Card</th>
-            <th>Accept Cash</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th></th>
+            <th>Customer Information</th>
+            <th>Payment Device Information</th>
+            <th>Vending Device Information</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var device in Model)
         {
             <tr>
-                <td>@item.Customer?.CompanyName</td>
-                <td>@item.PaymentDeviceSerial</td>
-                <td>@item.VendingDeviceSerial</td>
-                <td>@item.PaymentDevice?.Name</td> 
-                <td>@item.VendingDevice?.Model</td> 
-                <td>@item.AcceptCard</td>
-                <td>@item.AcceptCash</td>
-                <td>@item.LocationLat</td>
-                <td>@item.LocationLon</td>
+                <td>@device.CustomerInformation</td>
+                <td>@device.PaymentDeviceInformation</td>
+                <td>@device.VendingDeviceInformation</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Details" asp-route-id="@device.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@device.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@device.Id" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         }
